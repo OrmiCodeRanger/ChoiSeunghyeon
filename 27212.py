@@ -2,7 +2,6 @@
 boj.kr/27212
 '''
 import sys
-sys.setrecursionlimit(10 ** 9)
 
 UNDEFINED = -1
 
@@ -21,35 +20,27 @@ B = [int(s) - 1 for s in sys.stdin.readline().split(' ')]
 DP = [[UNDEFINED for _ in range(M)] for _ in range(N)]
 
 
-def sol_recur(i: int, j: int) -> int:
-    '''
-    i와 j가 손을 잡았을 때, 전체 인원의 가장 높은 만족도를 리턴하세요.
-    '''
+def sol(W, N, M) -> int:
+    DP = [[0 for _ in range(M)] for _ in range(N)]
 
-    global DP, W, N, M, C
+    DP[0][0] = W[A[0]][B[0]]
+    for j in range(1, M):
+        # init
+        DP[0][j] = max(DP[0][j-1], W[A[0]][B[j]])
 
-    # end condition
-    if DP[i][j] != UNDEFINED:
-        return DP[i][j]
-    # end condition
-    if i == N-1 and j == M-1:
-        DP[i][j] = W[A[i]][B[j]]
-        return DP[i][j]
+    for i in range(0, N):
+        for j in range(1, M):
+            # A 학교의 i와 B 학교의 j 이하의 번호를 가진 학생이 악수를 나눌 때
+            # 얻을 수 있는 최대 만족도를 리턴하세요
+            case1 = W[A[i]][B[j]] + \
+                (DP[i - 1][j - 1] if i > 0 else 0)  # i,j has hand-shaked
+            case2 = DP[i][j - 1]  # i has already hand-shaked
+            case3 = DP[i - 1][j] \
+                if i > 0 else 0  # i never want to hand-shake
+            DP[i][j] = max(max(case1, case2), case3)
 
-    best = 0
-    for next_i in range(i + 1, N):
-        for next_j in range(j + 1, M):
-            result = sol_recur(next_i, next_j)
-            if best < result:
-                best = result
-
-    DP[i][j] = best + W[A[i]][B[j]]
-
-    return DP[i][j]
+    return DP[N - 1][M - 1]
 
 
-submit = 0
-for i in range(N):
-    for j in range(M):
-        submit = max(submit,  sol_recur(i, j))
+submit = sol(W, N, M)
 print(submit)
