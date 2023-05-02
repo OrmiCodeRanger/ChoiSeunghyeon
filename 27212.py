@@ -20,27 +20,24 @@ B = [int(s) - 1 for s in sys.stdin.readline().split(' ')]
 DP = [[UNDEFINED for _ in range(M)] for _ in range(N)]
 
 
-def sol(W, N, M) -> int:
-    DP = [[0 for _ in range(M)] for _ in range(N)]
+def sol(W, N, M, A, B) -> int:
 
-    DP[0][0] = W[A[0]][B[0]]
+    dp = [[0 for _ in range(M)] for _ in range(N)]
+
+    # init base case
+    dp[0][0] = W[A[0]][B[0]]
     for j in range(1, M):
-        # init
-        DP[0][j] = max(DP[0][j-1], W[A[0]][B[j]])
+        dp[0][j] = max(dp[0][j - 1], W[A[0]][B[j]])
+    dp[1][0] = max(dp[0][0], W[A[1]][B[0]])
 
-    for i in range(0, N):
+    for i in range(1, N):
         for j in range(1, M):
-            # A 학교의 i와 B 학교의 j 이하의 번호를 가진 학생이 악수를 나눌 때
-            # 얻을 수 있는 최대 만족도를 리턴하세요
-            case1 = W[A[i]][B[j]] + \
-                (DP[i - 1][j - 1] if i > 0 else 0)  # i,j has hand-shaked
-            case2 = DP[i][j - 1]  # i has already hand-shaked
-            case3 = DP[i - 1][j] \
-                if i > 0 else 0  # i never want to hand-shake
-            DP[i][j] = max(max(case1, case2), case3)
+            dp[i][j] = dp[i-1][j-1] + W[A[i]][B[j]]
+            dp[i][j] = max(dp[i][j], dp[i][j - 1])
+            dp[i][j] = max(dp[i][j], dp[i - 1][j])
 
-    return DP[N - 1][M - 1]
+    return dp[N-1][M-1]
 
 
-submit = sol(W, N, M)
+submit = sol(W, N, M, A, B)
 print(submit)
