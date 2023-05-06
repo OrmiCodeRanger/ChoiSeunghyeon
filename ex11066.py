@@ -14,7 +14,6 @@ import sys
 input = sys.stdin.readline
 
 INTMAX = 99_999
-dp = []
 
 
 def sum_between(sum, i, j):
@@ -23,49 +22,40 @@ def sum_between(sum, i, j):
     return sum[j] - sum[i-1]
 
 
-def solution_recur(k, _sum, i, j) -> int:
+def solution(k: list[int]) -> int:
     '''
-    [base case]
-    ```python
-    dp[i][i] = 0
-    dp[i][i + 1] = k[i] + k[i+1]
-    ```python
-
-    [general case]
-    ```python
-    dp[i][j] = sum[i : j] + min(for l in range(i, j):
-                                    dp[i][l] + dp[l + 1][j])
-    ```python
+    non-recursive dynamic programming
     '''
-    global dp
-    if (dp[i][j] != 0):
-        return dp[i][j]
-
-    if (i == j):
-        return 0
-    if (i + 1 == j):
-        dp[i][j] = k[i] + k[j]
-        return dp[i][j]
-
-    best = INTMAX
-    for left in range(i, j):
-        best = min(best, solution_recur(k, _sum, i, left) +
-                   solution_recur(k, _sum, left+1, j))
-
-    dp[i][j] = sum_between(_sum, i, j) + best
-    return dp[i][j]
-
-
-def solution(k) -> int:
-    global dp
-
     K = len(k)
     dp = [[0 for _ in range(K)] for _ in range(K)]
+    my_sum = [k[0]]
+    for i in range(1, K):
+        my_sum.append(my_sum[i-1] + k[i])
 
-    _sum = [k[0]]
-    for i in range(1, len(k)):
-        _sum.append(_sum[i - 1] + k[i])
-    return solution_recur(k, _sum, 0, len(k) - 1)
+    # length = 0인 모든 dp[i][i]에 대하여 k[i] = 0이다.
+
+    length = 1
+    for left in range(0, K - length):
+        # length = 1인 모든 dp[i][i + length]에 대하여 k[i] + k[i + len]이다
+        right = left + length
+        dp[left][right] = k[left] + k[right]
+
+    for length in range(2, K + 1):
+        # length >= 2 인 모든 dp[i][j]에 대하여 다음 식을 만족한다.
+        # dp[i][j] = sum[i:j] + min(
+        #    for l in range(i, j):
+        #        dp[i][l] + dp[l+1][j]
+        # )
+        for left in range(0, K - length):
+            right = left + length
+
+            best = INTMAX
+            for mid in range(left, right):
+                best = min(best, dp[left][mid] + dp[mid + 1][right])
+
+            dp[left][right] = sum_between(my_sum, left, right) + best
+
+    return dp[0][K-1]
 
 
 if __name__ == "__main__":
