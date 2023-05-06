@@ -1,4 +1,5 @@
 import unittest
+import random
 from ex11066 import solution
 
 
@@ -13,6 +14,13 @@ class TestSolution(unittest.TestCase):
         k = [1, 21, 3, 4, 5, 35, 5, 4, 3, 5, 98, 21, 14, 17, 32]
         answer = 864
         self.assertEqual(answer, solution(k))
+    # end def
+
+    def test_timeout(self):
+        K = 500
+        k = [random.randrange(1, 10_000) for _ in range(K)]
+        solution(k)
+
     # end def
 
 

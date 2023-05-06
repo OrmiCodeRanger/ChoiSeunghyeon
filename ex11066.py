@@ -1,9 +1,14 @@
 '''
-[src]
+# src
 boj.kr/11066
 
-[category]
+# category
 dp
+
+# verdict
+[다음 링크](https://www.acmicpc.net/board/view/115640)에 따르면, O(N ** 3) 시간복잡도로 구현된
+재귀 파이썬 코드가 시간초과가 난다는 말이 있다. 지금 내가 쓴 코드의 시간복잡도는 세제곱인지조차 잘 모르겠다.
+일단 비재귀로 바꾼 다음 재시도 해보자.
 '''
 import sys
 input = sys.stdin.readline
