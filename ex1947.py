@@ -19,14 +19,16 @@ MOD_BY = 1_000_000_000
 
 if __name__ == "__main__":
     n = int(input())
-    dp = [0 for _ in range(n+1)]
+
+    # 어차피 dp 배열의 모든 원소를 다 쓰는게 아니니까...
+    dp = [0 for _ in range(3)]
 
     dp[0] = 1
     dp[1] = 0
 
     for i in range(2, n + 1):
-        dp[i] = ((i - 1) * (dp[i - 2] + dp[i - 1])) % MOD_BY
+        dp[i % 3] = ((i - 1) * (dp[(i - 2) % 3] + dp[(i - 1) % 3])) % MOD_BY
 
-    print(dp[n])
+    print(dp[n % 3])
 
 # end main
