@@ -7,7 +7,6 @@ ii) N을 소인수분해하여 수열 A를 만든다.
     3. zip(S[:], S[1:])의 결과를 A에 넣는다.
     4. 만약 A의 마지막 원소가 소수라면, 그 다음 마지막 원소와 곱하여 A를 완성시킨다.
 """
-from math import sqrt
 
 
 def is_prime(n: int) -> bool:
@@ -21,6 +20,7 @@ def is_prime(n: int) -> bool:
     elif n % 2 == 0 or n % 3 == 0:
         return False
     else:
+        # step을 6으로 주어도 된다고?
         for i in range(5, int(n**0.5)+1, 6):
             if n % i == 0 or n % (i+2) == 0:
                 return False
@@ -36,20 +36,29 @@ def find_prime(n: int) -> list[int]:
         2. n을 i로 나눈 몫으로 갱신한다.
     3. i를 다음 소인수로 설정한다.
     '''
+    if is_prime(n):
+        return []
+
     ret = []
-    for i in range(2, int(sqrt(n))):
+    range_start = 2
+    range_end = int(n ** 0.5) + 1
+    for i in range(range_start, range_end, 6):
         if not is_prime(i):
             continue
         while n % i == 0:
             ret.append(i)
             n //= i
 
+    # corner case: n is not 1
+    if n != 1:
+        ret.append(n)
+
     return ret
 
 
 def solution(n: int) -> list[int] | None:
     factorized = find_prime(n)
-    if len(factorized) == 1:
+    if len(factorized) <= 1:
         return None
 
     ret = list(map(lambda z: z[0] * z[1],
@@ -69,7 +78,7 @@ def solution(n: int) -> list[int] | None:
 if __name__ == "__main__":
     n = int(input())
     result = solution(n)
-    if result is None or len(result) == 1:
+    if result is None:
         print(-1)
         quit()
     for e in result:

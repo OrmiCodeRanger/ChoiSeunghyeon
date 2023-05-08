@@ -17,5 +17,16 @@ class TestSolution(unittest.TestCase):
     def test_find_prime_timeout(self):
         ex20946.find_prime(random.randint(2, 10 ** 12))
 
+    def test_find_prime_timeout2(self):
+        ex20946.find_prime(2147483649)
+
     def test_sol_timeout(self):
         ex20946.solution(random.randint(2, 10 ** 12))
+
+    def test_sol1(self):
+        self.assertEqual([4, 4, 6],
+                         ex20946.solution(96))
+
+    def test_sol2(self):
+        self.assertEqual([8],
+                         ex20946.solution(8))
