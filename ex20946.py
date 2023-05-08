@@ -65,8 +65,12 @@ def solution(n: int) -> list[int] | None:
 if __name__ == "__main__":
     n = int(input())
     result = solution(n)
-    print(-1 if result is None or len(result)
-          == 1 else ' '.join(map(str, result)))
+    if result is None or len(result) == 1:
+        print(-1)
+        quit()
+    for e in result:
+        print(e, end=' ')
+    print()
 
 
 # end main
