@@ -7,6 +7,7 @@ ii) N을 소인수분해하여 수열 A를 만든다.
     3. zip(S[:], S[1:])의 결과를 A에 넣는다.
     4. 만약 A의 마지막 원소가 소수라면, 그 다음 마지막 원소와 곱하여 A를 완성시킨다.
 """
+from math import sqrt
 
 
 def is_prime(n: int) -> bool:
@@ -28,19 +29,22 @@ def is_prime(n: int) -> bool:
 
 def find_prime(n: int) -> list[int]:
     '''
-    n의 소인수분해를 수행하는 코드
-    https://namu.wiki/w/%EC%86%8C%EC%9D%B8%EC%88%98%EB%B6%84%ED%95%B4/%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98
+    소인수분해를 수행하는 코드
+    1. i=2로 시작하여 n % i == 0인지 확인한다.
+    2. 만약 그렇다면 n % i != 0일때까지 다음을 반복한다.
+        1. list에 i를 추가한다.
+        2. n을 i로 나눈 몫으로 갱신한다.
+    3. i를 다음 소인수로 설정한다.
     '''
-    if n <= 2:
-        return [n, ]
-    for idx in range(2, n):
-        if n % idx == 0:
-            ret_list = []
-            val_a = find_prime(idx)
-            val_b = find_prime(n // idx)
-            ret_list = val_a + val_b
-            return ret_list
-    return [n, ]
+    ret = []
+    for i in range(2, int(sqrt(n))):
+        if not is_prime(i):
+            continue
+        while n % i == 0:
+            ret.append(i)
+            n //= i
+
+    return ret
 
 
 def solution(n: int) -> list[int] | None:
