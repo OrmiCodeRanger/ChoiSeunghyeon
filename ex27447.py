@@ -3,8 +3,11 @@ boj.kr/27447
 
 deque
 """
+from sys import stdin
 from collections import deque
 from enum import Enum, auto
+
+input = stdin.readline
 
 
 class Ord(Enum):
