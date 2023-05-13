@@ -14,7 +14,7 @@ BIT_CNT = 32
 BIN_CNT = MAX_DAY // BIT_CNT
 
 
-class Ord(Enum):
+class Cmp(Enum):
     Less = auto()
     Greater = auto()
     Equal = auto()
@@ -59,12 +59,12 @@ class Bitset:
 # assert not bs.test(bit)
 
 
-def compare(lhs, rhs) -> Ord:
+def compare(lhs, rhs) -> Cmp:
     if lhs < rhs:
-        return Ord.Less
+        return Cmp.Less
     if lhs > rhs:
-        return Ord.Greater
-    return Ord.Equal
+        return Cmp.Greater
+    return Cmp.Equal
 
 
 def solution(M: int, bitset: Bitset, schedule: deque[int]) -> bool:
@@ -89,17 +89,17 @@ def solution(M: int, bitset: Bitset, schedule: deque[int]) -> bool:
                 # Customer says, no coffee?? It's terrible!!!
                 return False
 
-            case (False, Ord.Greater, _, _):
+            case (False, Cmp.Greater, _, _):
                 # 사람이 아직 안 와 있고, 커피 우릴 시간이 아직 안 돼 있으면 일단
                 # 그릇부터 만들어 놓는다.
                 bowl_cnt += 1
 
-            case (False, Ord.Less | Ord.Equal, False, _):
+            case (False, Cmp.Less | Cmp.Equal, False, _):
                 # 사람이 아직 안 와 있고, 커피 우릴 시간이 적당한데 그릇이 없으면
                 # 일단 그릇부터 만들어 놓는다.
                 bowl_cnt += 1
 
-            case (False, Ord.Less | Ord.Equal, True, _):
+            case (False, Cmp.Less | Cmp.Equal, True, _):
                 # 커피를 우린다. (그릇을 커피로 변환한다)
                 coffee_cnt += 1
                 bowl_cnt -= 1
