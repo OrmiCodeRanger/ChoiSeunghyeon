@@ -31,7 +31,7 @@ def bit_no(idx) -> int:
 class Bitset:
 
     def __init__(self):
-        self.bits = [0 for _ in range(MAX_DAY + 1)]
+        self.bits = [0 for _ in range(BIN_CNT + 1)]
 
     def test(self, idx) -> bool:
         return self.bits[bin_no(idx)] >> bit_no(idx) & 1 == 1
