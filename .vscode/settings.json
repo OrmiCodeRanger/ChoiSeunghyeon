@@ -9,4 +9,8 @@
     "python.testing.pytestEnabled": false,
     "python.testing.unittestEnabled": true,
     "wolf.disableHotModeWarning": true,
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.autopep8"
+    },
+    "python.formatting.provider": "none",
 }
