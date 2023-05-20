@@ -12,18 +12,32 @@ from sys import stdin
 from typing import Callable
 
 
-def length_of_lis(iterable):
-    """lower bound를 활용한 효율적인 캐시 검색"""
-    cache = []
-
-    for num in iterable:
-        newL = bisect_left(cache, num)
-        if len(cache) == newL:
+def make_lis_cache(out_cache, num):
+    """
+    Args:
+        out_cache (2d-list): cache for on-going LIS-cache of consecutive
+        subsequence
+        num (int): in-coming new element from sequence S
+    """
+    for cache in out_cache:
+        idx = bisect_left(cache, num)
+        if len(cache) == idx:
             cache.append(num)
         else:
-            cache[newL] = num
+            cache[idx] = num
+    out_cache.append([num])
 
-    return len(cache)
+
+def solution(iterable):
+    cache = []
+    count = 0
+
+    for num in iterable:
+        make_lis_cache(cache, num)
+        count += sum(len(x) for x in cache)
+
+    # flatten 2-d cache
+    return count
 
 
 def generator_for_readline(n: int, readline: Callable):
@@ -39,14 +53,8 @@ if __name__ == "__main__":
     for i in range(1, T + 1):
         N = int(input())
         it = generator_for_readline(N, stdin.readline)
-        ls = list(it)
 
-        submit = 0
-
-        # using two-pointer method to get all consecutive subsequence
-        for left in range(len(ls)):
-            for right in range(left, len(ls)):
-                submit += length_of_lis(ls[left:right + 1])
+        submit = solution(it)
 
         print(f'Case #{i}: {submit}')
 
