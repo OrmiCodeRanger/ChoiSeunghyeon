@@ -55,8 +55,33 @@ class Solution3:
         return []
 
 
-print(Solution3().twoSum([2, 7, 11, 15], 9))
+class Solution4:
+    """
+    two pointers
+    인덱스를 저장한 채로 정렬(tuple)
+    89ms
+    """
+    def twoSum(self, nums: List[int], target: int) -> List[int]:
+        idx_nums = [(i, num) for i, num in enumerate(nums)]
+        idx_nums.sort(key=lambda tup: tup[1])
+
+        left, right = 0, len(nums) - 1
+
+        while left < right:
+            add = idx_nums[left][1] + idx_nums[right][1]
+            if add < target:
+                left += 1
+            elif add == target:
+                return [idx_nums[left][0], idx_nums[right][0]]
+            else:
+                right -= 1
+        return []
+
+
+solver = Solution4()
+
+print(solver.twoSum([2, 7, 11, 15], 9))
 # cannot happen
-print(Solution3().twoSum([2, 7, 11, 15], 4))
+print(solver.twoSum([2, 7, 11, 15], 4))
 # can happen
-print(Solution3().twoSum([2, 2, 11, 15], 4))
+print(solver.twoSum([2, 2, 11, 15], 4))
