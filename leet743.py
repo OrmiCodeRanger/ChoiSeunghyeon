@@ -4,10 +4,18 @@ min heap을 활용한 다익스트라
 """
 import collections
 import heapq
+from dataclasses import dataclass, field
+from typing import Any
 
 
 V = int  # Vertex
 W = int  # Weight
+
+
+@dataclass(order=True)
+class PrioritizedItem:
+    key: int
+    item: Any = field(compare=False)
 
 
 def dijkstra(graph: list[list[tuple[V, W]]], source: V) -> dict[V, W]:
@@ -18,14 +26,15 @@ def dijkstra(graph: list[list[tuple[V, W]]], source: V) -> dict[V, W]:
 
     # source로부터 v까지 필요한 거리
     # 위키와 다른 형태 주의
-    queue: list[tuple[V, W]] = [(source, 0)]
+    queue: list[PrioritizedItem] = [PrioritizedItem(key=0, item=(source, 0))]
+
     # source에서 v까지 최단거리
     # 위키와 다른 형태 주의. INF 값을 사용하지 않고 그냥 dict를 비워두는 것.
     dist: dict[V, W] = collections.defaultdict(W)
 
     while queue:
         # 가장 가까운 노드부터 꺼낸다. -- 위키피디아의 것과 일치
-        vertex, weight = heapq.heappop(queue)
+        vertex, weight = heapq.heappop(queue).item
 
         if vertex in dist:
             # 해당 버텍스로 가는 최단거리가 이미 구해졌다.
@@ -40,7 +49,7 @@ def dijkstra(graph: list[list[tuple[V, W]]], source: V) -> dict[V, W]:
             # 이때 source로부터 vertex까지의 최단거리인 weight를
             # 추가해 주어야 한다는 것이다.
             alt = n_weight + weight
-            heapq.heappush(queue, (n_vertex, alt))
+            heapq.heappush(queue, PrioritizedItem(key=alt, item=(n_vertex, alt)))
 
     return dist
 
