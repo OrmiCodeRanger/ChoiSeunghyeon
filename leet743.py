@@ -49,13 +49,14 @@ def dijkstra(graph: list[list[tuple[V, W]]], source: V) -> dict[V, W]:
             # 이때 source로부터 vertex까지의 최단거리인 weight를
             # 추가해 주어야 한다는 것이다.
             alt = n_weight + weight
-            heapq.heappush(queue, PrioritizedItem(key=alt, item=(n_vertex, alt)))
+            heapq.heappush(
+                queue, PrioritizedItem(
+                    key=alt, item=(n_vertex, alt)))
 
     return dist
 
 
 class Solution:
-
     def networkDelayTime(self, times: list[list[int]], n: int, k: int) -> int:
         """
         return the minimum time it takes for all the n nodes to receive the
@@ -69,7 +70,7 @@ class Solution:
         - k: very first node that tries to send signal
         """
         # normalise indices
-        times = [[u-1, v-1, w] for u, v, w in times]
+        times = [[u - 1, v - 1, w] for u, v, w in times]
         k = k - 1
 
         # create a graph
