@@ -10,6 +10,8 @@ T = TypeVar("T")
 V = int  # vertex id
 W = int  # weight
 
+INF = 1 << 30
+
 
 @dataclass(order=True)
 class Ord(Generic[T]):
@@ -34,37 +36,29 @@ class VWD(VW):
     depth: int = field(compare=False)
 
 
-def dijkstra(
-    graph: list[list[VW]], source: V, max_depth: int
-) -> tuple[dict[V, W], list[V]]:
-    """do basic dijkstra but with an additional predicate"""
-
-    # queue = [vertex, weight, depth]
-    queue = [VWD(source, 0, 0)]
-
-    dist: dict[V, W] = defaultdict(W)
-
-    # prev stores previous vertex
-    prev: list[V] = [source for _ in range(len(graph))]
+def dijkstra(graph: list[list[VW]], source: V, max_depth: int) -> list[W]:
+    """
+    do dijkstra, within bounded depth
+    """
+    queue = [VWD(vertex=source, weight=0, depth=0)]
+    dist: list[W] = [INF] * len(graph)
 
     while queue:
         cur = heappop(queue)
+
         if cur.depth > max_depth:
             continue
 
-        if cur.vertex not in dist or cur.weight <= dist[cur.vertex]:
-            # Ok, we finally have the shortest path from src to cur
-            dist[cur.vertex] = cur.weight
-
+        dist[cur.vertex] = cur.weight
         for neighbor in graph[cur.vertex]:
-            # we MUST add additional weight to get through to the neighbor
             alt = VWD(
-                neighbor.vertex, neighbor.weight + cur.weight, cur.depth + 1
+                vertex=neighbor.vertex,
+                weight=cur.weight + neighbor.weight,
+                depth=cur.depth + 1,
             )
             heappush(queue, alt)
-            prev[neighbor.vertex] = cur.vertex
 
-    return (dist, prev)
+    return dist
 
 
 class Solution:
@@ -77,7 +71,7 @@ class Solution:
             graph[start].append(VW(end, weight))
 
         # k is the number of stops, not all nodes!
-        distances, prev = dijkstra(graph, src, k + 1)
+        distances = dijkstra(graph, src, k + 1)
 
         if dst in distances:
             return distances[dst]
