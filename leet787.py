@@ -1,9 +1,9 @@
 """https://leetcode.com/problems/cheapest-flights-within-k-stops/
 """
+from collections import defaultdict
 from dataclasses import dataclass, field
 from typing import Any, TypeVar, Generic
 from heapq import heappush, heappop
-from collections import defaultdict
 
 
 T = TypeVar("T")
@@ -27,48 +27,44 @@ class VW:
     weight: int
 
 
+@dataclass(order=True)
+class VWD(VW):
+    """shorthand for Vertex, Weight, and Depth"""
+
+    depth: int = field(compare=False)
+
+
 def dijkstra(
-    graph: list[list[VW]], source: V, predicate
+    graph: list[list[VW]], source: V, max_depth: int
 ) -> tuple[dict[V, W], list[V]]:
     """do basic dijkstra but with an additional predicate"""
 
-    # always be zero-weight to myself
-    queue = [VW(source, 0)]
-    # stores minimum distance between source and each vertices,
-    # note that if vertex cannot approach, `dist` won't store any entry.
-    dist: dict[V, W] = {}
+    # queue = [vertex, weight, depth]
+    queue = [VWD(source, 0, 0)]
+
+    dist: dict[V, W] = defaultdict(W)
+
     # prev stores previous vertex
     prev: list[V] = [source for _ in range(len(graph))]
 
     while queue:
         cur = heappop(queue)
-        if not predicate(prev, cur.vertex) or cur.vertex in dist:
-            # additional business logic for extensibility
-            # already have a shortest dist to cur!!!
+        if cur.depth > max_depth:
             continue
-        # Ok, we finally have the shortest path from src to cur
-        dist[cur.vertex] = cur.weight
+
+        if cur.vertex not in dist or cur.weight <= dist[cur.vertex]:
+            # Ok, we finally have the shortest path from src to cur
+            dist[cur.vertex] = cur.weight
+
         for neighbor in graph[cur.vertex]:
             # we MUST add additional weight to get through to the neighbor
-            alt = VW(neighbor.vertex, neighbor.weight + cur.weight)
+            alt = VWD(
+                neighbor.vertex, neighbor.weight + cur.weight, cur.depth + 1
+            )
             heappush(queue, alt)
             prev[neighbor.vertex] = cur.vertex
 
     return (dist, prev)
-
-
-def counter(max_count=0):
-    """create a closure"""
-
-    def wrap(prev, vertex) -> bool:
-        cnt = 0
-        cur = vertex
-        while cur != prev[cur]:
-            cur = prev[cur]
-            cnt += 1
-        return cnt <= max_count
-
-    return wrap
 
 
 class Solution:
@@ -77,11 +73,11 @@ class Solution:
     ) -> int:
         # convert flights into graph
         graph: list[list[VW]] = [[] for _ in range(n)]
-        for src, dst, weight in flights:
-            graph[src].append(VW(dst, weight))
+        for start, end, weight in flights:
+            graph[start].append(VW(end, weight))
 
         # k is the number of stops, not all nodes!
-        distances, prev = dijkstra(graph, src, counter(k + 1))
+        distances, prev = dijkstra(graph, src, k + 1)
 
         if dst in distances:
             return distances[dst]

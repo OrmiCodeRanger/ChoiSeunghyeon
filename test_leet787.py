@@ -29,3 +29,29 @@ class TestClass:
             k=0,
             answer=500,
         )
+
+    def test_3(self):
+        do_test(
+            n=4,
+            flights=[
+                [0, 1, 100],
+                [1, 2, 100],
+                [2, 0, 100],
+                [1, 3, 600],
+                [2, 3, 200],
+            ],
+            src=0,
+            dst=3,
+            k=1,
+            answer=700,
+        )
+
+    def test_4(self):
+        do_test(
+            n=4,
+            flights=[[0, 1, 1], [0, 2, 5], [1, 2, 1], [2, 3, 1]],
+            src=0,
+            dst=3,
+            k=1,
+            answer=6,
+        )
