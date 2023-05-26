@@ -10,7 +10,7 @@
     "python.testing.unittestEnabled": false,
     "wolf.disableHotModeWarning": true,
     "[python]": {
-        "editor.defaultFormatter": "ms-python.python"
+        "editor.defaultFormatter": "ms-python.black-formatter"
     },
     "python.formatting.provider": "none",
     "python.linting.flake8Enabled": true,
